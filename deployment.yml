@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petstore-deployment
+  labels:
+    app: petstore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petstore
+  template:
+    metadata:
+      labels:
+        app: petstore
+    spec:
+      containers:
+      - name: petstore
+        image: vnraj685093/petstore:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
